@@ -30,7 +30,7 @@ You hear this from us all the time, but build your code incrementally.
 Build it in small steps, and make sure you are confident and comfortable that the code is
 functioning correctly before you move on to the next step.
 */
-var investment = process.argv.slice(2).join();
+var initial_investment = process.argv.slice(2).join();
 var purchased_bottles = 0;
 var bottle_caps = 0;
 var empty_bottles = 0;
@@ -39,8 +39,7 @@ var total_bottles_from_caps = 0;
 var total_bottles_from_empty_bottles = 0;
 
 function purchaseBottles(money) {
-  purchased_bottles = money / 2;
-  total_bottles_aquired += purchased_bottles;
+  return money / 2;
 }
 
 function drinkSoda(number_of_bottles) {
@@ -51,26 +50,34 @@ function drinkSoda(number_of_bottles) {
   purchased_bottles = 0;
 }
 
-function recycle(bottle_num, bottle_cap_num) {
+function recycleBottles(bottle_num) {
   var bottles_from_empty_bottles = 0;
-  var bottles_from_caps = 0;
 
   bottles_from_empty_bottles = Math.floor(bottle_num / 2);
   empty_bottles = bottle_num % 2;
+  total_bottles_from_empty_bottles += bottles_from_empty_bottles;
+
+  //Return the number of bottles purchased by recycling
+  return bottles_from_empty_bottles;
+}
+
+function recycleCaps(bottle_cap_num){
+  var bottles_from_caps = 0;
 
   bottles_from_caps += Math.floor(bottle_cap_num / 4);
   bottle_caps = bottle_cap_num % 4;
-
-  //Refresh the number of full bottles, and totals
-  purchased_bottles = bottles_from_empty_bottles + bottles_from_caps;
   total_bottles_from_caps += bottles_from_caps;
-  total_bottles_from_empty_bottles += bottles_from_empty_bottles;
+
+  //Return the number of bottles purchased by recycling
+  return bottles_from_caps;
 }
 
 //Drink soda, get empty bottles and caps, recycle and get more soda bottles
 function dringAndRecycle(){
   drinkSoda(purchased_bottles);
-  recycle(empty_bottles, bottle_caps);
+  bottles_from_empty_bottles = recycleBottles(empty_bottles);
+  bottles_from_caps = recycleCaps(bottle_caps);
+  purchased_bottles = bottles_from_empty_bottles + bottles_from_caps;
 
   //If there are still soda bottles remaining, drink and recycle again
   if (purchased_bottles >= 1){
@@ -79,11 +86,14 @@ function dringAndRecycle(){
 }
 
 //Make initial bottle purchase with cash
-purchaseBottles(investment);
+purchased_bottles = purchaseBottles(initial_investment);
 //Drink all the soda and recycle bottles and caps
 dringAndRecycle();
 
-total_bottles_aquired += total_bottles_from_empty_bottles + total_bottles_from_caps;
+//Calculate total number of bottles aquired
+total_bottles_aquired += purchaseBottles(initial_investment) +
+      total_bottles_from_empty_bottles + total_bottles_from_caps;
+
 console.log("Total bottles purchased:", total_bottles_aquired);
 console.log("Total bottles from bottle recycling:", total_bottles_from_empty_bottles);
 console.log("Total bottles from cap recycling:", total_bottles_from_caps);
