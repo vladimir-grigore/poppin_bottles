@@ -30,23 +30,25 @@ You hear this from us all the time, but build your code incrementally.
 Build it in small steps, and make sure you are confident and comfortable that the code is
 functioning correctly before you move on to the next step.
 */
-
-var investment = 20;
+var investment = process.argv.slice(2).join();
+console.log(investment)
 var bottle_price = 2;
-// var purchased_bottles = 0;
+var purchased_bottles = 0;
 var bottle_caps = 0;
 var empty_bottles = 0;
 
 function purchaseBottles(money) {
-  return money / bottle_price;
+  purchased_bottles = money / bottle_price;
 }
 
-// function drinkSoda(number_of_bottles) {
-//   bottle_caps = number_of_bottles;
-//   empty_bottles = number_of_bottles;
-// }
-bottle_caps, empty_bottles = purchaseBottles(investment);
+function drinkSoda(number_of_bottles) {
+  bottle_caps = number_of_bottles;
+  empty_bottles = number_of_bottles;
+}
 
-console.log("Initial pop bottle purchase:", purchaseBottles(investment));
+purchaseBottles(investment);
+drinkSoda(purchased_bottles);
+
+console.log("Initial pop bottle purchase:", purchased_bottles);
 console.log("Bottle caps:", bottle_caps);
 console.log("Empty bottles:", empty_bottles);
