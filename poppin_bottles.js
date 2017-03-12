@@ -31,24 +31,61 @@ Build it in small steps, and make sure you are confident and comfortable that th
 functioning correctly before you move on to the next step.
 */
 var investment = process.argv.slice(2).join();
-console.log(investment)
-var bottle_price = 2;
 var purchased_bottles = 0;
 var bottle_caps = 0;
 var empty_bottles = 0;
+var total_bottles_aquired = 0;
+var total_bottles_from_caps = 0;
+var total_bottles_from_empty_bottles = 0;
 
 function purchaseBottles(money) {
-  purchased_bottles = money / bottle_price;
+  purchased_bottles = money / 2;
+  total_bottles_aquired += purchased_bottles;
 }
 
 function drinkSoda(number_of_bottles) {
-  bottle_caps = number_of_bottles;
-  empty_bottles = number_of_bottles;
+  bottle_caps += number_of_bottles;
+  empty_bottles += number_of_bottles;
+
+  //Refresh the number of full bottles
+  purchased_bottles = 0;
 }
 
-purchaseBottles(investment);
-drinkSoda(purchased_bottles);
+function recycle(bottle_num, bottle_cap_num) {
+  var bottles_from_empty_bottles = 0;
+  var bottles_from_caps = 0;
 
-console.log("Initial pop bottle purchase:", purchased_bottles);
-console.log("Bottle caps:", bottle_caps);
-console.log("Empty bottles:", empty_bottles);
+  bottles_from_empty_bottles = Math.floor(bottle_num / 2);
+  empty_bottles = bottle_num % 2;
+
+  bottles_from_caps += Math.floor(bottle_cap_num / 4);
+  bottle_caps = bottle_cap_num % 4;
+
+  //Refresh the number of full bottles, and totals
+  purchased_bottles = bottles_from_empty_bottles + bottles_from_caps;
+  total_bottles_from_caps += bottles_from_caps;
+  total_bottles_from_empty_bottles += bottles_from_empty_bottles;
+}
+
+//Drink soda, get empty bottles and caps, recycle and get more soda bottles
+function dringAndRecycle(){
+  drinkSoda(purchased_bottles);
+  recycle(empty_bottles, bottle_caps);
+
+  //If there are still soda bottles remaining, drink and recycle again
+  if (purchased_bottles >= 1){
+    dringAndRecycle();
+  }
+}
+
+//Make initial bottle purchase with cash
+purchaseBottles(investment);
+//Drink all the soda and recycle bottles and caps
+dringAndRecycle();
+
+total_bottles_aquired += total_bottles_from_empty_bottles + total_bottles_from_caps;
+console.log("Total bottles purchased:", total_bottles_aquired);
+console.log("Total bottles from bottle recycling:", total_bottles_from_empty_bottles);
+console.log("Total bottles from cap recycling:", total_bottles_from_caps);
+console.log("Remaining bottle caps:", bottle_caps);
+console.log("Remaining empty bottles:", empty_bottles);
